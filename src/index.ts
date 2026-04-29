@@ -19,7 +19,7 @@ import logger from './utils/logger.js';
 
 function parseArgs(argv: string[]): { configPath: string; teamFilter?: string } {
   const args = argv.slice(2);
-  let configPath = '.kiro/specs/dev-metrics-agent/config.json';
+  let configPath = '.kiro/specs/metrics-workflow/config.json';
   let teamFilter: string | undefined;
 
   for (let i = 0; i < args.length; i++) {
@@ -28,10 +28,10 @@ function parseArgs(argv: string[]): { configPath: string; teamFilter?: string } 
     } else if (args[i] === '--team' && args[i + 1]) {
       teamFilter = args[++i];
     } else if (args[i] === '--help' || args[i] === '-h') {
-      logger.info('Usage: dev-metrics-agent --config <path> [--team <name>]');
+      logger.info('Usage: metrics-workflow --config <path> [--team <name>]');
       logger.info('');
       logger.info('Options:');
-      logger.info('  --config <path>   Path to config.json (default: .kiro/specs/dev-metrics-agent/config.json)');
+      logger.info('  --config <path>   Path to config.json (default: .kiro/specs/metrics-workflow/config.json)');
       logger.info('  --team <name>     Run for a single team only');
       logger.info('  --help            Show this help message');
       process.exit(0);

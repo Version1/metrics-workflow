@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Interactive setup script for dev-metrics-agent.
+ * Interactive setup script for metrics-workflow.
  * Writes config.json and .env with credentials.
  * Run with: npm run setup
  */

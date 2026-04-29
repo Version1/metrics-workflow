@@ -9,9 +9,9 @@ export const AUDIT_GENESIS_HASH = 'sha256:genesis:v1';
 export const DEFAULT_OUTPUT = {
   reportsDir: 'quality-metrics/reports',
   auditDir: 'quality-metrics/audit',
-  schemaFile: '.kiro/specs/dev-metrics-agent/standard-schema.json',
-  schedulerState: '.kiro/specs/dev-metrics-agent/scheduler-state.json',
-  integrationGuide: '.kiro/specs/dev-metrics-agent/integration-guide.md',
+  schemaFile: '.kiro/specs/metrics-workflow/standard-schema.json',
+  schedulerState: '.kiro/specs/metrics-workflow/scheduler-state.json',
+  integrationGuide: '.kiro/specs/metrics-workflow/integration-guide.md',
 } as const;
 
 /** Process exit codes. */

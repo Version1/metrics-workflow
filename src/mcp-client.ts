@@ -20,7 +20,7 @@ export class McpClientSession {
   constructor(transportConfig: McpTransportConfig) {
     this.transportConfig = transportConfig;
     this.client = new Client(
-      { name: 'dev-metrics-agent', version: '1.0.0' },
+      { name: 'metrics-workflow', version: '1.0.0' },
       { capabilities: {} }
     );
   }
