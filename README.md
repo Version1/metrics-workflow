@@ -29,7 +29,7 @@ Reports land in `quality-metrics/reports/metrics-scan-<timestamp>/`.
 node dist/index.js --config path/to/config.json
 
 # Scan a single team
-node dist/index.js --config path/to/config.json --team team-alpha
+node dist/index.js --config path/to/config.json --team your-team-name
 ```
 
 ## Configuration
@@ -49,7 +49,7 @@ cp config.example.json config.json
   "department": { "name": "Engineering" },
   "teams": [
     {
-      "name": "team-alpha",
+      "name": "your-team-name",
       "sonarqubeProjectKey": "your-org_your-project"
     }
   ],
@@ -67,9 +67,9 @@ cp config.example.json config.json
   "department": { "name": "Engineering" },
   "teams": [
     {
-      "name": "team-alpha",
-      "sonarqubeProjectKey": "org.example:team-alpha",
-      "jiraProjectKey": "ALPHA"
+      "name": "your-team-name",
+      "sonarqubeProjectKey": "com.example:my-service",
+      "jiraProjectKey": "MYPROJ"
     }
   ],
   "output": {
