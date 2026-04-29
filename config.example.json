@@ -1,0 +1,31 @@
+{
+  "_comment": "Dev Metrics Agent — example configuration. Copy to config.json and populate. DO NOT commit config.json to Git.",
+
+  "sonarqube": {
+    "_comment": "Remove this block entirely if your team does not use SonarQube. For SonarCloud use https://api.sonarcloud.io/mcp",
+    "serverUrl": "https://api.sonarcloud.io/mcp"
+  },
+
+  "jira": {
+    "_comment": "Remove this block entirely if your team does not use Jira. For Atlassian Cloud, use https://mcp.atlassian.com/v1/sse",
+    "serverUrl": "https://mcp.atlassian.com/v1/sse"
+  },
+
+  "department": {
+    "name": "Your Department Name"
+  },
+
+  "teams": [
+    {
+      "name": "your-team-name",
+      "_comment": "sonarqubeProjectKey required if sonarqube block is present. jiraProjectKey required if jira block is present.",
+      "sonarqubeProjectKey": "your-org_your-project",
+      "jiraProjectKey": "YOUR"
+    }
+  ],
+
+  "output": {
+    "_comment": "All fields optional. Defaults shown below match this repository's structure.",
+    "reportsDir": "quality-metrics/reports"
+  }
+}

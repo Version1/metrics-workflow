@@ -1,0 +1,17 @@
+{
+  "sonarqube": {
+    "serverUrl": "https://api.sonarcloud.io/mcp"
+  },
+  "department": {
+    "name": "Engineering"
+  },
+  "teams": [
+    {
+      "name": "",
+      "sonarqubeProjectKey": ""
+    }
+  ],
+  "output": {
+    "reportsDir": "quality-metrics/reports"
+  }
+}
