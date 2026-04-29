@@ -1,0 +1,139 @@
+name: Scheduled Metrics Scan
+
+on:
+  schedule:
+    # Runs every Friday at 11:00 UTC
+    - cron: '0 11 * * 5'
+  workflow_dispatch:  # allow manual trigger from the Actions tab
+
+jobs:
+  scan:
+    name: Collect Metrics
+    runs-on: ubuntu-latest
+
+    env:
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Write config
+        run: echo '${{ secrets.METRICS_CONFIG }}' > config.json
+
+      - name: Run scan
+        id: scan
+        env:
+          SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+          SONARQUBE_ORG: ${{ secrets.SONARQUBE_ORG }}
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+        run: npm run scan 2>&1 | tee /tmp/scan-output.log; exit ${PIPESTATUS[0]}
+
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics-reports-${{ github.run_id }}
+          path: quality-metrics/reports/
+          retention-days: 90
+
+      - name: Notify Teams — success
+        if: success() && env.TEAMS_WEBHOOK_URL != ''
+        run: |
+          python3 << 'PYEOF'
+          import json, urllib.request, os, glob
+
+          report_file = sorted(glob.glob('quality-metrics/reports/*/metrics-*.md'))[-1]
+          report_text = open(report_file).read()
+
+          payload = {
+            "type": "message",
+            "attachments": [{
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.4",
+                "body": [{
+                  "type": "TextBlock",
+                  "text": report_text,
+                  "wrap": True
+                }]
+              }
+            }]
+          }
+
+          data = json.dumps(payload).encode()
+          req = urllib.request.Request(
+            os.environ["TEAMS_WEBHOOK_URL"],
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+          )
+          with urllib.request.urlopen(req) as r:
+            print(r.read().decode())
+          PYEOF
+
+      - name: Notify Teams — failure
+        if: failure() && env.TEAMS_WEBHOOK_URL != ''
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 << 'PYEOF'
+          import json, urllib.request, os
+
+          # Read captured scan output if available, fall back to generic message
+          log_file = '/tmp/scan-output.log'
+          if os.path.exists(log_file):
+            log_lines = open(log_file).readlines()
+            # Last 30 lines is enough context without blowing up the card
+            log_text = ''.join(log_lines[-30:]).strip()
+          else:
+            log_text = 'No log output captured.'
+
+          run_url = os.environ.get('RUN_URL', '')
+
+          body_text = (
+            "❌ **Weekly Metrics Scan Failed**\n\n"
+            f"**Workflow run:** {run_url}\n\n"
+            "**Last log output:**\n\n"
+            f"```\n{log_text}\n```"
+          )
+
+          payload = {
+            "type": "message",
+            "attachments": [{
+              "contentType": "application/vnd.microsoft.card.adaptive",
+              "content": {
+                "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                "type": "AdaptiveCard",
+                "version": "1.4",
+                "body": [{
+                  "type": "TextBlock",
+                  "text": body_text,
+                  "wrap": True
+                }]
+              }
+            }]
+          }
+
+          data = json.dumps(payload).encode()
+          req = urllib.request.Request(
+            os.environ["TEAMS_WEBHOOK_URL"],
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+          )
+          with urllib.request.urlopen(req) as r:
+            print(r.read().decode())
+          PYEOF

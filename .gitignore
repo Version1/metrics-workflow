@@ -1,0 +1,35 @@
+# ── Credentials & local config ──────────────────────────────
+# Never commit these — they contain tokens and project keys
+.env
+config.json
+
+# ── Generated reports & audit logs ──────────────────────────
+quality-metrics/reports/metrics-scan-*/
+quality-metrics/audit/
+
+# ── Internal org documents ───────────────────────────────────
+# Strategy and playbook docs are org-specific — not for public repo
+quality-metrics/quality-strategy.md
+quality-metrics/measurement-playbook.md
+quality-metrics/README.md
+
+# ── Build output ─────────────────────────────────────────────
+dist/
+coverage/
+
+# ── Dependencies ─────────────────────────────────────────────
+node_modules/
+
+# ── Kiro IDE (specs, designs, internal planning) ─────────────
+.kiro/
+
+# ── OS & editor noise ────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.iml
+.idea/
+.vscode/
+
+# ── Misc ─────────────────────────────────────────────────────
+*.log
+/tmp/
