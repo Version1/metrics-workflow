@@ -1,4 +1,4 @@
-# dev-metrics-agent
+# metrics-workflow
 
 A CLI tool that pulls code quality and delivery metrics from SonarQube and Jira, and turns them into clean Markdown reports your team can actually read.
 
